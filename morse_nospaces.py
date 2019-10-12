@@ -1,13 +1,14 @@
 #!/usr/bin/python
-# The core of this code was found on stack overflow by David Cain 21 Mar 2014 
-# Extended to: 
+# The core of this code was found on stack overflow by David Cain 21 Mar 2014
+# Extended to:
 #    Handle command line input (vs in code string entry)
 #    Output all solutions of min length by default (vs the single shortest)
 #    Output all solutions of up to a given word count length
 #    Filter results to only include commonly used words (vs. whole dictionary)
-#    Use extremely long and verbose and long variable and method names 
+#    Use extremely long and verbose and long variable and method names
 
 from pprint import PrettyPrinter
+from collections import defaultdict
 import argparse, heapq, re, sys
 
 # From: http://norvig.com/ngrams/count_1w.txt
@@ -30,7 +31,7 @@ MORSE = dict(zip('ABCDEFGHIJKLMNOPQRSTUVWXYZ', [
 # Methods for testing
 def _ToMorseNoSpaces(msg):
     """Turn a message into timing-less morse code."""
-    return "".join("".join(MORSE[c] for c in word) 
+    return "".join("".join(MORSE[c] for c in word)
                    for word in msg.upper().split(' '))
 ####################################
 
@@ -45,7 +46,7 @@ def _LoadWords(dict_file):
 
     # Remove all single letter words except A, I.
     for c in 'BCDEFGHJKLMNOPQRSTUVWXYZ':
-        words.remove(c) 
+        words.remove(c)
 
     return words
 
@@ -56,7 +57,7 @@ def _LoadFreqWords(dict_file):
     for line in open(dict_file):
         word, freq = line.strip().split('\t')
         try:
-            freq_map[word] = int(freq)
+            freq_map[word.upper()] = int(freq)
         except ValueError as verr:
             print "Non-integer frequency(%s) for word(%s) in file(%s)" \
                   % (freq, word, dict_file)
@@ -81,7 +82,7 @@ def _CharacterTransitionMap(morse_msg):
     result = [{} for i in xrange(len(morse_msg))]
     for i in xrange(len(morse_msg)):
         for c, m in MORSE.iteritems():
-            if morse_msg[i:i+len(m)] == m: 
+            if morse_msg[i:i+len(m)] == m:
               result[i][c] = i + len(m)
     return result
 
@@ -92,7 +93,7 @@ def _GenerateWords(words, prefixes, ctm, i, prefix=''):
     """
     if prefix in words:
         yield prefix, i
-    if i == len(ctm): 
+    if i == len(ctm):
         return
     for c, j in ctm[i].iteritems():
         if prefix + c in prefixes:
@@ -159,7 +160,7 @@ def _SolutionsOfLength(num_words, words_by_freq, wtm, wtm_index=0):
     if num_words == 0 or wtm_index == len(wtm):
         return []
 
-    results = [] 
+    results = []
 
     # Prefer solutions that consume more more chars at a time
     # -- This may be unecessary with "Most Likely Solutions"
@@ -191,7 +192,7 @@ def _MostLikelySolutions(sentences, number_to_print, words_by_freq):
         for word_choice_set in complex_sentence[1:-1].split("] ["):
             # Words in each choice set are already sorted by frequency
             best_word = word_choice_set.split(", ")[0][1:-1]
-            score *= words_by_freq.get(best_word) or 0 
+            score *= words_by_freq.get(best_word) or 0
             simple_sentence += best_word + " "
         results[simple_sentence.strip()] = score
     return heapq.nlargest(number_to_print, results, key=results.get)
@@ -248,7 +249,7 @@ def _ParseCommandLineArguments(argv):
     parser.add_argument("morse", nargs='*',
         help="Morse code. Any spacing is ignored.")
 
-    parser.add_argument("++allow_rare_words", "+r", action="store_true", 
+    parser.add_argument("++allow_rare_words", "+r", action="store_true",
         help="Allow rarer words in the solution.")
 
     parser.add_argument("++list", "+l", action="store_true",
@@ -286,6 +287,7 @@ def _ParseCommandLineArguments(argv):
 def Main():
     """Takes a string of morse code and outputs possible translations."""
 
+    # Parse arguments
     args = _ParseCommandLineArguments(sys.argv)
     morse_msg = _ToMorseNoSpaces(args.test_msg) if args.test_msg else args.morse
     max_solution_len = args.max
@@ -296,21 +298,23 @@ def Main():
 
     print_as_flat_list = args.list
 
+    # Load Word lists
     words_by_freq = _LoadFreqWords(freq_file)
-    words = _LoadWords(dict_file) 
+    words = _LoadWords(dict_file)
     if not use_full_dict:
         words = set.intersection(words, words_by_freq.keys())
     prefixes = _AllStringsThatBecomeWords(words)
-  
-    print "input:", morse_msg 
+
+    # Output starting state
+    print "input:", morse_msg
     if use_full_dict:
         print "Using the full dictionary ('rare' words)."
 
     # MorseCharacter[{next_index: [words_ending_at_next_index-1]}]
     word_transition_map = _WordTransitionMap(words, prefixes, morse_msg)
-  
+
     min_sentence_len = _nWordsInShortestSentence(word_transition_map)
-    print "Shortest sentence length (%d); Number of possible sentences (%d) " \
+    print "Shortest sentence: %d words; Number of possible sentences: %d" \
          % (min_sentence_len, _nSentencesInWordMap(word_transition_map))
 
     # Print solutions for each length as we go. 7+ word solutions are slow
@@ -326,6 +330,7 @@ def Main():
 
         print "\n -- All solutions"
         _PrintAllSolutions(solutions, print_as_flat_list)
-  
+
+
 if __name__ == '__main__':
     Main()
