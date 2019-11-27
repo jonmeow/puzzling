@@ -74,8 +74,8 @@ def _LoadWords(dict_file):
     """Returns a set of all the words in dict_file."""
     words = set(word.strip().upper().replace("'","") for word in open(dict_file))
 
-    # Remove all single letter words except A, I.
-    for c in 'BCDEFGHJKLMNOPQRSTUVWXYZ':
+    # Remove all single letter words except A, I, O. (O is used in older quotes)
+    for c in 'BCDEFGHJKLMNPQRSTUVWXYZ':
         words.remove(c)
 
     return words
@@ -336,7 +336,7 @@ def Main():
 
     # Determine which input ngrams to use (input or test)
     ngram = args.ngrams if not args.test_msg else _CreateNgrams(args.test_msg)
-    ngram_set = set([x.upper() for x in ngram])
+    ngram_set = [x.upper() for x in ngram]
 
     print("input:", ngram, "enumerations:", args.lengths)
 
