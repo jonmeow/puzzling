@@ -126,8 +126,8 @@ class State:
   def NextUnplacedShip(self):
     return self._unplaced_ships[0]
 
-  def NumberOfUnplacedShips(self):
-    return len(self._unplaced_ships)
+  def AllShipsPlaced(self):
+    return not self._unplaced_ships
 
   def NextLegalHorizontalPlacementInRow(self, row, ship, col_offset):
     if not self._RowHasSpaceForShip(row, ship):
@@ -301,7 +301,7 @@ def _TryInsertFirstShipVertical(state):
 
 solved_states = set()
 def _Solve(state):
-  if state.NumberOfUnplacedShips() == 0:
+  if state.AllShipsPlaced():
     if state not in solved_states:
       solved_states.add(state)
       state.PrintSolvedGrid()
