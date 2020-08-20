@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/env python3
 # Ngram solver.  The Following __doc__ shows in the help text.
 """
 Finds an ordering of the given ngrams that make a series of words.
