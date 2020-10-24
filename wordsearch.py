@@ -1,5 +1,9 @@
-#!/usr/bin/python
-# Usage: script -f <grid_file> -l <min_string_length>
+#!/usr/bin/python3
+# Usage: script [-l <min_string_length>] 
+#               [-d dict_file] 
+#               [-p] # print the input grid
+#               [-r] # use insane dict
+#               <grid_file> 
 """
 Searches the grid for all words of length min_string_length or longer.
 Output coordinates use 0,0 at the top left.
@@ -24,7 +28,7 @@ RARE_DICT_FILE = "/usr/share/dict/american-english-insane"
 def _LoadGridFromFile(f):
   """Returns an array of the contents of the file."""
   try:
-    return [filter(str.isalnum,line.upper()) for line in open(f)]
+    return ["".join(filter(str.isalnum,line.upper())) for line in open(f)]
   except FileNotFoundError as e:
     exit(e)
 
@@ -35,7 +39,7 @@ def _LoadWordsFromDictFile(dict_file):
 
 def _PrintIfWordEitherDirection(direction, rev_direction, word, row, col, words):
     if word.lower() in words:
-      print '%s at %02i, %02i, %s' % (word, row, col, direction)
+      print('%s at %02i, %02i, %s' % (word, row, col, direction))
 
     reversed_word = word[::-1]
     if reversed_word.lower() in words:
@@ -49,7 +53,7 @@ def _PrintIfWordEitherDirection(direction, rev_direction, word, row, col, words)
           col = col + (word_len - 1)
         elif direction == "down left":
           col = col - (word_len -1)
-      print '%s at %02i, %02i, %s' % (reversed_word, row, col, rev_direction)
+      print('%s at %02i, %02i, %s' % (reversed_word, row, col, rev_direction))
 
 
 def _PrintWordsInGrid(words, grid, nrows, ncols, min_len):
@@ -60,8 +64,8 @@ def _PrintWordsInGrid(words, grid, nrows, ncols, min_len):
   # When searching check A and reverse(A) at the same time 
   max_dimension = max(nrows, ncols)
   for strlen in range(min_len, max_dimension):
-    for row in xrange(nrows):
-      for col in xrange(ncols):
+    for row in range(nrows):
+      for col in range(ncols):
 
         # Check horizontal
         if col + strlen <= ncols:
@@ -92,19 +96,19 @@ def _ParseCommandLineArguments(argv):
         formatter_class = argparse.RawTextHelpFormatter,
         description = __doc__)
 
-    parser.add_argument("--grid_file", "-f", required=True,
+    parser.add_argument("grid_file", nargs=1,
         help="The file containing the grid to search.")
 
-    parser.add_argument("--min_length", "-l", type=int, required=True,
-        help="The minimum length of word to find.")
+    parser.add_argument("-l", "--min_length", type=int, default=4,
+        help="The minimum length of word to find. Default 4.")
 
-    parser.add_argument("--dict_file", "-d", default=HUGE_DICT_FILE,
-        help="Dictionary to use. Default: %s" % HUGE_DICT_FILE)
+    parser.add_argument("-d", "--dict_file", default=HUGE_DICT_FILE,
+        help="Dictionary to use.\nDefault: %s" % HUGE_DICT_FILE)
 
-    parser.add_argument("--print_grid", "-p", action="store_true",
+    parser.add_argument("-p", "--print_grid", action="store_true",
         help="Print the grid to be searched.")
 
-    parser.add_argument("--allow_rare_words", "-r", action="store_true",
+    parser.add_argument("-r", "--allow_rare_words", action="store_true",
         help="Allow rarer words in the solution (bigger dictionary)."
              "\nThis overrides --dict_file")
 
@@ -119,7 +123,7 @@ def Main():
   args = _ParseCommandLineArguments(sys.argv)
   min_len = args.min_length
   dict_file = args.dict_file
-  grid_file = args.grid_file
+  grid_file = args.grid_file[0]
   print_grid_file = args.print_grid
 
   grid = _LoadGridFromFile(grid_file)
