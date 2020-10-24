@@ -1,0 +1,142 @@
+Number 100: Numeron Dragon
+Number 101: Silent Honor ARK
+Number 102: Star Seraph Sentry
+Number 103: Ragnazero
+Number 104: Masquerade
+Number 105: Battlin' Boxer Star Cestus
+Number 106: Giant Hand
+Number 107: Galaxy-Eyes Tachyon Dragon
+Number 10: Illumiknight
+Number 11: Big Eye
+Number 12: Crimson Shadow Armor Ninja
+Number 13: Embodiment of Crime
+Number 14: Greedy Sarameya
+Number 15: Gimmick Puppet Giant Grinder
+Number 16: Shock Master
+Number 17: Leviathan Dragon
+Number 18: Heraldry Patriarch
+Number 19: Freezadon
+Number 20: Giga-Brilliant
+Number 21: Frozen Lady Justice
+Number 22: Zombiestein
+Number 23: Lancelot, Dark Knight of the Underworld
+Number 24: Dragulas the Vampiric Dragon
+Number 25: Force Focus
+Number 26: Spaceway Octobypass
+Number 27: Dreadnought Dreadnoid
+Number 28: Titanic Moth
+Number 29: Mannequin Cat
+Number 30: Acid Golem of Destruction
+Number 31: Embodiment of Punishment
+Number 32: Shark Drake
+Number 33: Chronomaly Machu Mech
+Number 34: Terror-Byte
+Number 35: Ravenous Tarantula
+Number 36: Chronomaly Chateau Huyuk
+Number 37: Hope Woven Dragon Spider Shark
+Number 38: Hope Harbinger Dragon Titanic Galaxy
+Number 39: Utopia
+Number 39: Utopia Beyond
+Number 39: Utopia Double
+Number 39: Utopia Roots
+Number 40: Gimmick Puppet of Strings
+Number 41: Bagooska the Terribly Tired Tapir
+Number 42: Galaxy Tomahawk
+Number 43: Manipulator of Souls
+Number 44: Sky Pegasus
+Number 45: Crumble Logos the Prophet of Demolition
+Number 46: Dragluon
+Number 47: Nightmare Shark
+Number 48: Shadow Lich
+Number 49: Fortune Tune
+Number 50: Blackship of Corn
+Number 51: Finisher the Strong Arm
+Number 52: Diamond Crab King
+Number 53: Heart-eartH
+Number 54: Lion Heart
+Number 55: Gogogo Goliath
+Number 56: Gold Rat
+Number 57: Tri-Head Dust Dragon
+Number 58: Burner Visor
+Number 59: Crooked Cook
+Number 5: Doom Chimera Dragon
+Number 60: Dugares the Timeless
+Number 61: Volcasaurus
+Number 62: Galaxy-Eyes Prime Photon Dragon
+Number 63: Shamoji Soldier
+Number 64: Ronin Raccoon Sandayu
+Number 65: Djinn Buster
+Number 66: Master Key Beetle
+Number 67: Pair-a-Dice Smasher
+Number 68: Sanaphond the Sky Prison
+Number 69: Heraldry Crest
+Number 6: Chronomaly Atlandis
+Number 70: Malevolent Sin
+Number 71: Rebarian Shark
+Number 72: Shogi Rook
+Number 100: Numeron Dragon
+Number 101: Silent Honor ARK
+Number 102: Star Seraph Sentry
+Number 103: Ragnazero
+Number 104: Masquerade
+Number 105: Battlin' Boxer Star Cestus
+Number 106: Giant Hand
+Number 107: Galaxy-Eyes Tachyon Dragon
+Number 73: Abyss Splash
+Number 74: Master of Blades
+Number 75: Bamboozling Gossip Shadow
+Number 76: Harmonizer Gradielle
+Number 77: The Seven Sins
+Number 78: Number Archive
+Number 79: Battlin' Boxer Nova Kaiser
+Number 7: Lucky Straight
+Number 80: Rhapsody in Berserk
+Number 81: Superdreadnought Rail Cannon Super Dora
+Number 82: Heartlandraco
+Number 83: Galaxy Queen
+Number 84: Pain Gainer
+Number 85: Crazy Box
+Number 86: Heroic Champion - Rhongomyniad
+Number 87: Queen of the Night
+Number 88: Gimmick Puppet of Leo
+Number 89: Diablosis the Mind Hacker
+Number 8: Heraldic King Genom-Heritage
+Number 90: Galaxy-Eyes Photon Lord
+Number 91: Thunder Spark Dragon
+Number 92: Heart-eartH Dragon
+Number 93: Utopia Kaiser
+Number 94: Crystalzero
+Number 95: Galaxy-Eyes Dark Matter Dragon
+Number 96: Dark Mist
+Number 97: Draglubion
+Number 98: Antitopian
+Number 99: Utopic Dragon
+Number 9: Dyson Sphere
+Number C101: Silent Honor DARK
+Number C102: Archfiend Seraph
+Number C103: Ragnafinity
+Number C104: Umbral Horror Masquerade
+Number C105: Battlin' Boxer Comet Cestus
+Number C106: Giant Red Hand
+Number C107: Neo Galaxy-Eyes Tachyon Dragon
+Number C15: Gimmick Puppet Giant Hunter
+Number C32: Shark Drake Veiss
+Number C39: Utopia Ray
+Number C39: Utopia Ray V
+Number C39: Utopia Ray Victory
+Number C40: Gimmick Puppet of Dark Strings
+Number C43: High Manipulator of Chaos
+Number C5: Chaos Chimera Dragon
+Number C65: King Overfiend
+Number C69: Heraldry Crest of Horror
+Number C6: Chronomaly Chaos Atlandis
+Number C73: Abyss Supra Splash
+Number C80: Requiem in Berserk
+Number C88: Gimmick Puppet Disaster Leo
+Number C92: Heart-eartH Chaos Dragon
+Number C96: Dark Storm
+Number C9: Chaos Dyson Sphere
+Number F0: Utopic Future
+Number S0: Utopic ZEXAL
+Number S39: Utopia Prime
+Number S39: Utopia the Lightning

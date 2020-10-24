@@ -1,32 +1,33 @@
 #!/usr/bin/python
+# Usage: script -f <grid_file> -l <min_string_length>
+"""
+Searches the grid for all words of length min_string_length or longer.
+Output coordinates use 0,0 at the top left.
 
-# Assumption: Grid is rectangular (or filled to be rectangular)
-DATA=\
-[
-"SNTIERSRSAWBHISF",
-"SOAIKEIYITIRNDIO",
-"IVNNAIEMEAIAKEER",
-"AEGDDNRMRNIVLIRG",
-"LMOIEDRERGAOINRE",
-"FBKALIACAOLEMDAT",
-"AEINTADHIAFNAIOI",
-"VREMABEORGAOLAFT",
-"SNTIERSRSAWBHISF",
-"SOAIKEIYITIRNDIO",
-"IVNNAIEMEAIAKEER",
-"AEGDDNRMRNIVLIRG",
-"LMOIEDRERGAOINRE",
-"FBKALIACAOLEMDAT",
-"AEINTADHIAFNAIOI",
-"VREMABEORGAOLAFT"
-]
+The grid file format is:
+ABCDEFG
+HIGHEED
+...
+The grid is assumed to be rectangular.
+Any non-alphanumeric characters will be stripped. (So A B C is fine.)
+"""
 
+import argparse
 import os
 import sys
+from pprint import PrettyPrinter
 
 #DICT_FILE = "/usr/share/dict/words"
-#DICT_FILE = "/usr/share/dict/american-english-huge"
-DICT_FILE = "/usr/share/dict/american-english-insane"
+HUGE_DICT_FILE = "/usr/share/dict/american-english-huge"
+RARE_DICT_FILE = "/usr/share/dict/american-english-insane"
+
+def _LoadGridFromFile(f):
+  """Returns an array of the contents of the file."""
+  try:
+    return [filter(str.isalnum,line.upper()) for line in open(f)]
+  except FileNotFoundError as e:
+    exit(e)
+
 
 def _LoadWordsFromDictFile(dict_file):
   return set(word.strip().lower() for word in open(dict_file).readlines())
@@ -80,33 +81,62 @@ def _PrintWordsInGrid(words, grid, nrows, ncols, min_len):
           _Check("down left", "up right",
                  "".join([grid[row+i][col-i] for i in range(strlen)]))
           
+def _ParseCommandLineArguments(argv):
+
+    def _PrintHelpAndDie(error):
+        print(error + "\n")
+        parser.print_help()
+        exit(1)
+
+    parser = argparse.ArgumentParser(
+        formatter_class = argparse.RawTextHelpFormatter,
+        description = __doc__)
+
+    parser.add_argument("--grid_file", "-f", required=True,
+        help="The file containing the grid to search.")
+
+    parser.add_argument("--min_length", "-l", type=int, required=True,
+        help="The minimum length of word to find.")
+
+    parser.add_argument("--dict_file", "-d", default=HUGE_DICT_FILE,
+        help="Dictionary to use. Default: %s" % HUGE_DICT_FILE)
+
+    parser.add_argument("--print_grid", "-p", action="store_true",
+        help="Print the grid to be searched.")
+
+    parser.add_argument("--allow_rare_words", "-r", action="store_true",
+        help="Allow rarer words in the solution (bigger dictionary)."
+             "\nThis overrides --dict_file")
+
+    args = parser.parse_args()
+    if args.allow_rare_words:
+      args.dict_file = RARE_DICT_FILE
+
+    return args
+
+
 def Main():
-  """
-Usage: script <min_string_length>
+  args = _ParseCommandLineArguments(sys.argv)
+  min_len = args.min_length
+  dict_file = args.dict_file
+  grid_file = args.grid_file
+  print_grid_file = args.print_grid
 
-Searches the grid for all words of length min_string_length or longer.
-Output coordinates use 0,0 at the top left.
+  grid = _LoadGridFromFile(grid_file)
 
-The grid to search needs to be entered in this script file.
-  """
-  if len(sys.argv) != 2:
-    sys.exit(Main.__doc__)
-  try:
-    min_len = int(sys.argv[1])
-  except ValueError as verr:
-    print verr
-    sys.exit(Main.__doc__)
+  if print_grid_file:
+    PrettyPrinter(indent=2).pprint(grid)
 
-  nrows=len(DATA)
-  ncols=len(DATA[1])
-
+  nrows=len(grid)
+  ncols=len(grid[1])
   max_dimension = max(nrows, ncols)
   if (min_len > max_dimension):
     sys.exit('Minimum word length specified(%i) exceeds both row(%i)'
              ' and column(%i) size.' % (min_len, nrows, ncols))
 
-  words = _LoadWordsFromDictFile(DICT_FILE)
-  _PrintWordsInGrid(words, DATA, nrows, ncols, min_len)
+  words = _LoadWordsFromDictFile(dict_file)
+
+  _PrintWordsInGrid(words, grid, nrows, ncols, min_len)
 
 
 if __name__ == '__main__':

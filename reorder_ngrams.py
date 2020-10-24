@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3.7
 # Ngram solver.  The Following __doc__ shows in the help text.
 """
 Finds an ordering of the given ngrams that make a series of words.
@@ -50,6 +50,7 @@ class Preferences:
     # User settings
     allow_mid_ngram: bool = False
     dict_file: str = DICT_FILE
+    drop_one_ngram: bool = False
     print_as_you_go: bool = False
 
     # Internal settings
@@ -114,10 +115,31 @@ def _ExtractLongWords(ngrams, lengths, preferences, dicts):
 
 
 def _FindSequences(ngrams, lengths, preferences):
+    if preferences.drop_one_ngram:
+        return _FindSequencesMissingAnNgram(ngrams, lengths, preferences)
+    else:
+        return _FindSequencesAllNgrams(ngrams, lengths, preferences)
 
+
+def _FindSequencesMissingAnNgram(ngrams, lengths, preferences):
+    solutions = set()
+    for ngram in ngrams:
+        new_ngrams = copy.deepcopy(ngrams)
+        new_ngrams.remove(ngram)
+
+        if preferences.print_as_you_go:
+            print("Trying without: " + ngram)
+
+        for sol in _FindSequencesAllNgrams(new_ngrams, lengths, preferences):
+          solutions.add(sol+"; Dropping: " + ngram)
+
+    return solutions
+
+
+def _FindSequencesAllNgrams(ngrams, lengths, preferences):
     words  = _LoadWords(preferences.dict_file)
     dicts = Dicts(words=words, prefixes=_WordPrefixes(words))
-
+ 
     solutions = set()
 
     if lengths:
@@ -148,7 +170,7 @@ def _FindPossiblyOffsetSeq(ngrams, lengths, preferences, dicts, solutions):
                 continue
             mod_ngrams = ngrams.copy()
             mod_ngrams.remove(ngram)
-            mod_ngrams.add(ngram[c:])
+            mod_ngrams.append(ngram[c:])
 
             _FindEnumeratedSeq(new_word="", next_ngram="",
                                unused_ngrams=mod_ngrams,
@@ -251,12 +273,20 @@ def _FindSeq(new_word, next_ngram, unused_ngrams, soln, preferences, dicts,
         _FindSeq(new_word, ngram, ngrams, soln, preferences, dicts, solutions)
 
 
-def _VerifyNgramAndEnumLengthsOrDie(ngrams, lengths, allow_shorter_lengths):
+def _VerifyNgramAndEnumLengthsOrDie(ngrams, lengths, allow_shorter_lengths, drop_one_ngram):
     if not lengths:
         return
     enum_total = sum(lengths)
     ngram_lengths = len("".join(ngrams))
+
+    # When dropping an ngram, assume all (but lats) are the same length
+    if drop_one_ngram:
+      ngram_lengths -= len(ngrams[0])
+
     if enum_total > ngram_lengths:
+        if drop_one_ngram:
+            print("Dropping one ngram assumes all (but the last) ngram"
+                  " are the same length.")
         exit("Enum total %d, is greater than ngram lengths %d" %
              (enum_total, ngram_lengths))
     if enum_total < ngram_lengths and not allow_shorter_lengths:
@@ -304,6 +334,9 @@ def _ParseCommandLineArguments(argv):
     parser.add_argument("--dict_file", "-d", default=DICT_FILE,
         help="Dictionary to use. Default: %s" % DICT_FILE)
 
+    parser.add_argument("--drop_one_ngram", "-x", action="store_true",
+        help="Drop one ngram before trying to solve. Default: False")
+
     parser.add_argument("--print_as_you_go", "-p", action="store_true",
         help="Print solutions as they are found (can be noisy).")
 
@@ -341,7 +374,8 @@ def Main():
     print("input:", ngram, "enumerations:", args.lengths)
 
     # Verify lengths after showing input so users can see what doesn't match.
-    _VerifyNgramAndEnumLengthsOrDie(ngram_set, args.lengths, args.subset)
+    _VerifyNgramAndEnumLengthsOrDie(ngram_set, args.lengths, args.subset, 
+                                    args.drop_one_ngram)
 
     if args.allow_rare_words:
         print("Using insane size dictionary.")
@@ -353,6 +387,7 @@ def Main():
     preferences = Preferences(
                      allow_mid_ngram = args.allow_mid_ngram,
                      dict_file = args.dict_file,
+                     drop_one_ngram = args.drop_one_ngram,
                      print_as_you_go = args.print_as_you_go)
 
     solutions = _FindSequences(ngram_set, args.lengths, preferences)
