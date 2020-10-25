@@ -34,56 +34,70 @@ def _LoadGridFromFile(f):
 
 
 def _LoadWordsFromDictFile(dict_file):
-  return set(word.strip().lower() for word in open(dict_file).readlines())
-
-
-def _PrintIfWordEitherDirection(direction, rev_direction, word, row, col, words):
-    if word.lower() in words:
-      print('%s at %02i, %02i, %s' % (word, row, col, direction))
-
-    reversed_word = word[::-1]
-    if reversed_word.lower() in words:
-      # Give human friendly coordinates for reversed words
-      word_len = len(word)
-      if direction == "across":
-        col = col + word_len - 1
-      else:
-        row = row + word_len - 1
-        if direction == "down right":
-          col = col + (word_len - 1)
-        elif direction == "down left":
-          col = col - (word_len -1)
-      print('%s at %02i, %02i, %s' % (reversed_word, row, col, rev_direction))
+  return set(word.strip().upper() for word in open(dict_file).readlines())
 
 
 def _PrintWordsInGrid(words, grid, nrows, ncols, min_len):
 
-  def _Check(direction, rev_direction, word):
-    _PrintIfWordEitherDirection(direction, rev_direction, word, row, col, words)
+  def _PrintIfWord(direction, word):
+    if word in words:
+      print('%s at %02i, %02i, %s' % (word, row, col, direction))
 
-  # When searching check A and reverse(A) at the same time 
+  def _Reverse(word):
+    return word[::-1]
+
+  def _CanGoRight():
+    return col + strlen <= ncols
+
+  def _CanGoLeft():
+    return col >= strlen-1
+
+  def _CanGoUp():
+    return row >= strlen-1
+
+  def _CanGoDown():
+    return row + strlen <= nrows
+
+  # The output is easier to use if it is sorted by wordlen and then row, col.
+  #
+  # Being efficent and checkng A and reverse(A) at the same time, means
+  # saving all the results and resorting them prior to printing.  I'm lazy.
+  #
   max_dimension = max(nrows, ncols)
   for strlen in range(min_len, max_dimension):
     for row in range(nrows):
       for col in range(ncols):
 
-        # Check horizontal
-        if col + strlen <= ncols:
-          _Check("across", "left", grid[row][col:col+strlen])
+        # This ordering is for the ease of human parsing, not efficiency
+        if _CanGoRight():
+          _PrintIfWord("across", grid[row][col:col+strlen])
 
-        # If there are not enough rows, rule out all down combinations
-        if row + strlen > nrows:
-          continue
+        if _CanGoLeft():
+          _PrintIfWord("left", _Reverse(grid[row][col-strlen+1:col+1]))
 
-        _Check("down", "up", "".join([grid[row+i][col] for i in range(strlen)]))
+        if _CanGoDown():
+          _PrintIfWord("down", 
+                       "".join([grid[row+i][col] for i in range(strlen)]))
 
-        if col + strlen <= ncols:
-          _Check("down right", "up left",
-                 "".join([grid[row+i][col+i] for i in range(strlen)]))
+          if _CanGoRight():
+            _PrintIfWord("down right",
+                         "".join([grid[row+i][col+i] for i in range(strlen)]))
 
-        if col + 1 >= strlen:
-          _Check("down left", "up right",
-                 "".join([grid[row+i][col-i] for i in range(strlen)]))
+          if _CanGoLeft():
+            _PrintIfWord("down left",
+                         "".join([grid[row+i][col-i] for i in range(strlen)]))
+
+        if _CanGoUp():
+          _PrintIfWord("up", "".join([grid[row-i][col] for i in range(strlen)]))
+
+          if _CanGoRight():
+            _PrintIfWord("up right",
+                         "".join([grid[row-i][col+i] for i in range(strlen)]))
+
+          if _CanGoLeft():
+            _PrintIfWord("up left",
+                         "".join([grid[row-i][col-i] for i in range(strlen)]))
+
           
 def _ParseCommandLineArguments(argv):
 
