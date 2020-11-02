@@ -5,4 +5,4 @@ Dictionary files:
 
 fin.
 
-# Test VXWXXXYXZX!X"X#X$X%X&X\'X(X)X*X+X,X-X.X/X:X;X<X=X>X?X@X[X\\X]X^X_X`X{X|X}X~X X\tX\nX\rX\x0bX\x0cX
+# Test X!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~X	X
